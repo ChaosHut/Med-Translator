@@ -172,11 +172,14 @@
             }
         });
 
-        function adjustFontSizeToElement(element) {
-            var elementWidth = element.offsetWidth;
-            var fontSize = Math.max(Math.min(elementWidth / 10, 18), 12);
-            element.style.fontSize = fontSize + 'px';
-        }
+function adjustFontSizeToElement(element) {
+    var elementWidth = element.offsetWidth;
+    var divisor = window.innerWidth > 600 ? 10 : 6;
+    var fontSize = Math.max(Math.min(elementWidth / divisor * window.devicePixelRatio, 18), 14);
+    element.style.fontSize = fontSize + 'px';
+}
+
+
 
         function adjustFontSizes() {
             buttons.forEach(adjustFontSizeToElement);
