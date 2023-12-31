@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .vas-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+           user-select: none;
+        }
+
+        .vas-scale {
+            height: 300px;
+            width: 40px;
+            background: linear-gradient(to top, green, red);
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .indicator {
+            height: 10px;
+            width: 40px;
+            background-color: blue;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+
+        .label {
+            margin-left: 20px;
+            font-size: 18px;
+            writing-mode: vertical-lr;
+            transform: rotate(180deg);
+           user-select: none;
+        }
+
+      .smiley {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%) rotate(-90deg); /* Drehung um 90 Grad */
+          user-select: none; /* Verhindert die Auswahl der Smileys */
+          pointer-events: none; /* Lässt Klickereignisse durch */
+          font-size: 50px; /* Einheitliche Größe für beide Smileys */
+      }
+
+      .smiley-bottom { /* Lächelnder Smiley am unteren Ende */
+          bottom: -100px;
+      }
+
+      .smiley-top { /* Trauriger Smiley am oberen Ende */
+          top: -100px;
+      }
+    </style>
+</head>
+<body>
+  <div class="vas-container">
+      <div id="scale" class="vas-scale" onmousedown="startDrag(event)" ontouchstart="startDrag(event)">
+          <div id="indicator" class="indicator"></div>
+        <div class="smiley smiley-bottom">😃</div> <!-- Lächelnder Smiley -->
+          <div class="smiley smiley-top">😖</div> <!-- Schmerzverzerrter Smiley -->
+      </div>
+      <div class="label">
+          Schmerzstärke: <span id="painLevel">0</span> / 10
+      </div>
+  </div>
+    <script>
+        var isDragging = false;
+
+        function startDrag(e) {
+            isDragging = true;
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchmove', onDrag);
+            document.addEventListener('touchend', stopDrag);
+            e.preventDefault();
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+            var touch = e.touches ? e.touches[0] : e;
+            var scale = document.getElementById("scale");
+            var scaleRect = scale.getBoundingClientRect();
+            var y = touch.clientY - scaleRect.top;
+            y = Math.max(0, Math.min(y, scaleRect.height));
+
+            var indicator = document.getElementById("indicator");
+            indicator.style.bottom = (scaleRect.height - y - indicator.offsetHeight / 2) + 'px';
+
+            var position = 10 - (y / scaleRect.height) * 10;
+            document.getElementById("painLevel").innerText = Math.round(position);
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchmove', onDrag);
+            document.removeEventListener('touchend', stopDrag);
+        }
+    </script>
+</body>
+</html>

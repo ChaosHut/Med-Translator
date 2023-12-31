@@ -97,7 +97,7 @@
 
 /* Stile für den Text im Popup */
 .popup-content p {
-    font-size: 4vw; /* Dynamische Schriftgröße, angepasst an die Viewport-Breite */
+    Font-size: 100px; /* Dynamische Schriftgröße, angepasst an die Viewport-Breite */font
     line-height: 1.2; /* Gute Zeilenhöhe für Lesbarkeit */
     word-break: keep-all; /* Verhindert Worttrennungen */
     overflow-wrap: break-word; /* Erlaubt Umbrüche bei langen Wörtern */
@@ -121,7 +121,7 @@
             </select>
         </div>
         <div class="soundboard">
-            <button class="sound-button">Ich bin Ihr/e Narkoseärzt/in</button>
+            <button class="sound-button">Ich bin Ihr Narkosearzt</button>
             <button class="sound-button">2</button>
             <button class="sound-button">3</button>
             <button class="sound-button">4</button>
@@ -137,31 +137,53 @@
         </div>
     </div>
 
-<script>
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Elemente aus dem DOM auswählen
         var popup = document.getElementById('popup');
         var popupText = popup.querySelector('.popup-content p');
         var languageSelector = document.querySelector('.language-selector select');
         var buttons = document.querySelectorAll('.sound-button');
 
+        // Übersetzungen
         var translations = {
-            deutsch: ["Ich bin Ihr/e Narkoseärzt/in", "Text 2", "Text 3", "..."],
-            arabisch: ["أنا طبيب التخدير الخاص بك!", "Arabischer Text 2", "Arabischer Text 3", "..."]
-            // Fügen Sie hier die Übersetzungen für weitere Sprachen hinzu
+            deutsch: ["Mein Name ist Nicolai Kluge. Ich bin heute Ihr Narkosearzt", "Text 2", "Text 3", "..."],
+            arabisch: ["اسمي نيكولاي كلوج. أنا اليوم طبيب التخدير الخاص بك.", "Arabischer Text 2", "Arabischer Text 3", "..."]
         };
 
+        // Audio-Elemente erstellen
+        var audios = {
+            deutsch: [
+                new Audio('/static/deutsch1.mp3'),
+                new Audio('/static/deutsch2.mp3'),
+                // ...
+            ],
+            arabisch: [
+                new Audio('/static/arabisch1.mp3'),
+                new Audio('/static/arabisch2.mp3'),
+                // ...
+            ]
+        };
+
+        // Popup anzeigen, Schriftgröße anpassen und Audio abspielen
         function showPopup(phraseIndex) {
             var selectedLanguage = languageSelector.value;
             popupText.textContent = translations[selectedLanguage][phraseIndex];
             popup.style.display = 'flex';
+            adjustPopupFontSize();
+
+            // Audio abspielen
+            audios[selectedLanguage][phraseIndex].play();
         }
 
+        // Event-Listener für Sound-Buttons
         buttons.forEach(function(button, index) {
             button.addEventListener('click', function() {
                 showPopup(index);
             });
         });
 
+        // Event-Listener für das Schließen des Popups
         popup.addEventListener('click', function() {
             popup.style.display = 'none';
         });
@@ -172,27 +194,47 @@
             }
         });
 
-function adjustFontSizeToElement(element) {
-    var elementWidth = element.offsetWidth;
-    var divisor = window.innerWidth > 600 ? 10 : 6;
-    var fontSize = Math.max(Math.min(elementWidth / divisor * window.devicePixelRatio, 18), 14);
-    element.style.fontSize = fontSize + 'px';
-}
+        // Anpassung der Schriftgröße für das Popup
+        function adjustPopupFontSize() {
+            var popupContent = popup.querySelector('.popup-content');
+            var maxHeight = popupContent.clientHeight;
+            var maxWidth = popupContent.clientWidth;
 
+            // Setzen Sie eine anfängliche Schriftgröße
+            var fontSize = Math.min(maxHeight, maxWidth) / 10; // Größe basierend auf dem kleineren Wert von Höhe/Breite
+            popupText.style.fontSize = fontSize + 'px';
 
+            // Vergrößern Sie die Schriftgröße, solange der Text in das Popup passt
+            while ((popupText.scrollHeight <= maxHeight && popupText.scrollWidth <= maxWidth) && fontSize < maxHeight) {
+                fontSize += 1; // Schriftgröße schrittweise erhöhen
+                popupText.style.fontSize = fontSize + 'px';
+            }
 
+            // Verkleinern Sie die Schriftgröße, um eine genaue Passform zu erzielen
+            while ((popupText.scrollHeight > maxHeight || popupText.scrollWidth > maxWidth) && fontSize > 10) {
+                fontSize -= 1; // Schriftgröße schrittweise verkleinern
+                popupText.style.fontSize = fontSize + 'px';
+            }
+        }
+
+        // Schriftgrößenanpassung für Buttons
+        function adjustFontSizeToElement(element) {
+            var elementWidth = element.offsetWidth;
+            var fontSize = window.innerWidth <= 600 ? 20 : Math.max(Math.min(elementWidth / 10 * window.devicePixelRatio, 18), 14);
+            element.style.fontSize = fontSize + 'px';
+        }
+
+        // Schriftgrößenanpassung initial und bei Größenänderung des Fensters
         function adjustFontSizes() {
             buttons.forEach(adjustFontSizeToElement);
             adjustFontSizeToElement(document.querySelector('.popup-content'));
         }
 
-        // Initialer Aufruf
         adjustFontSizes();
-
-        // Event Listener für Fenstergrößenänderung
         window.addEventListener('resize', adjustFontSizes);
     });
-</script>
+  </script>
+
 
 
 </body> 
