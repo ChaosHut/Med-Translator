@@ -45,6 +45,24 @@
            user-select: none;
         }
 
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 40px;
+            color: white;
+            background-color: black;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
       .smiley {
           position: absolute;
           left: 50%;
@@ -74,6 +92,8 @@
           Schmerzstärke: <span id="painLevel">0</span> / 10
       </div>
   </div>
+  <div class="back-button" onclick="window.location.href='index.html'">X</div>
+
     <script>
         var isDragging = false;
 
@@ -108,6 +128,8 @@
             document.removeEventListener('touchmove', onDrag);
             document.removeEventListener('touchend', stopDrag);
         }
+
+      
     </script>
 </body>
 </html>
